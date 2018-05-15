@@ -1,0 +1,5 @@
+/* Exercise 1-11. How would you test the word count program?
+What kinds of inputs are most likely to uncover bugs if there are any?*/
+
+- First thing to do is check that each if condition is being executed.
+- Afterwards stress conditions and check for edge cases. 

@@ -105,7 +105,7 @@ main()
 ```
 - `++nc` is a __pre-increment__ operator, which means that the var is incremented by 1 before it is used.
 
-## Line counting
+### Line counting
 - counting lines is just counting `\n`.
 ``` C
 /* count lines in input */
@@ -120,6 +120,79 @@ main()
       ++nl;
     }
   }
-  printf("%ld\n", nl); 
+  printf("%ld\n", nl);
 }
 ```
+### Word Counting
+- __word__ is defined as: _any sequence of characters that does not contain a blank, tab or newline._
+
+``` C
+#include <stdio.h>
+
+#define IN 1 /* inside a word */
+#define OUT 0 /* outside a word */
+
+/* count lines, words, and characters in input */
+main()
+{
+  int c, nl, nw, nc, state;
+
+  state = OUT; // outside a word by default
+  nl = nw = nc = 0; // default initial state of counters
+  while((c=getchar()) != EOF)
+  {
+    ++nc;
+    if (c == '\n')
+    {
+      ++nl
+    }
+    if (c == ' ' || c == '\n' || c == '\t')
+    {
+      state = OUT;
+    }
+    else if (state == OUT)
+    {
+      state = IN;
+      ++nw;
+    }
+  }
+  printf("%d %d %d\n", nl, nw, nc);
+  return 0;
+}
+```
+- once the first character of a word is received then it is counted as a word. `state` records if program is in a word or not.
+- `nl = nw = nc = 0`: assignment is an expression with a value and assignments associated from right to left. Same as
+`n1 = (nw = (nc = 0))`
+- `||` means `OR`, `&&` is `AND`.
+
+## 1.6 Arrays
+``` C
+#include <stdio.h>
+/* count digits, white space, others */
+main()
+{
+  int c, i, nwhite, nother;
+  int ndigit[10]; // array with size
+
+  // initalize
+  nwhite = nother = 0;
+  for (int i=0; i<10; i++)
+  {
+    ndigit[i] = 0;
+  }
+
+  while((c=getchar()) != EOF)
+  {
+    if (c>='0' && c <='9')
+    {++ndigit[c-'0'];}
+    else if (c==' ' || c == '\n' || c == '\t')
+    {++nwhite;}
+    else{++nother;}
+  }
+
+  printf("digits=");
+  for(i=0;i<10;++i){printf(" %d",ndigit[i]);}
+  printf(", white space = %d, other = %d\n", nwhite, nother);
+}
+```
+- ndigit is an array of 10 integers. 
