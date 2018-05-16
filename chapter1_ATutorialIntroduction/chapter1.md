@@ -195,4 +195,120 @@ main()
   printf(", white space = %d, other = %d\n", nwhite, nother);
 }
 ```
-- ndigit is an array of 10 integers. 
+- ndigit is an array of 10 integers.
+
+## 1.7/1.8 Functions / Arguments - Call by Value
+- `Fortran` has _subroutines_, `Pascal` has _procedures_, in `C` we have _functions_.
+- convenient way to encapsulate encapsulation. Don't have to worry about implementation, just its input and output.
+
+``` C
+#include <stdio.h>
+/* implement power function*/
+
+int power(int m, int n);
+main()
+{
+  int i;
+  for (i=0; i<100; i++)
+  {
+    printf("%d %d %d\n", i, power(2, i), power(-3, i));
+    return 0;
+  }
+}
+
+/*power: raise base to n-th power; n>=0*/
+int power(int base, int n)
+{
+  int i, p;
+  p = 1;
+  for (i = 1; i<= n; ++i)
+  {
+    p = p*base;
+  }
+  return p;
+}
+```
+- all function args are pass by "value" i.e. swapping function won't work.
+- pass by value gets a copy of the arguments when the function is called rather than the value that is store in memory.
+- this is an _asset not a liability. It leads to more compact programs with fewer extraneous variables, i.e. you don't have to make temp vars of your parameters whenever you want to alter them._
+- simpler implementation of power function, count down the variable n:
+``` C
+int power(int base, int n)
+{
+  int p;
+  for (p = 1; n> 0; --n)
+    p = P*base;
+  return p;
+}
+```
+- When necessary, it is possible to arrange for function to modify variable if the caller provides the _address_ of the variable to be set (i.e. a __pointer__) and the called function must declare the parameter to be a pointer and access the variable indirectly through it.
+- For arrays the name of an array is use as a parameter, an address to the first element in the array, thus, the function can alter values in array.
+
+1.9 Character Arrays
+- `getline()` function will get the line of an input. This fuction will return lenght of line, if zero is return then it is end of file.
+- 'copy()' function will currently longest line to new place in memory.
+``` C
+#include <stdio.h>
+#define MAXLINE 1000 /* maximum input line size */
+int getline(char line[], int maxline);
+void copy(char to[], char from[]);
+
+/* print longest input line */
+main()
+{
+  int len;                  /* length of current line */
+  int max;                  /* length of maximum line seen */
+  char line[MAXLINE];       /* current input line */
+  char longest[MAXLINE];    /* longest line seen so far */
+
+
+  max = 0;
+  while((len=get(line, MAXLINE)) > 0)
+  {
+    if (len>max)
+    {
+      max = len;
+      copy(longest, line);
+    }
+  }
+  if (max>0) /* indication of a line */
+  {
+    printf("%s", longest);
+  }
+  return 0;
+}
+
+/* getline: read a line into s, return length */
+int getline(char s[], int lim)
+{
+  int c, i;
+  for (int i=0; i<lim-1 && (c=getchar()!=EOF&&c!='\n'); ++i)
+  {
+    // put character into array s
+    s[i] = c;
+  }
+  // adding index for a new line becuase we want to return 0 when it is EOF
+  if (c == '\n')
+  {
+    s[i] = c;
+    ++i;
+  }
+  // this is end of string
+  s[i] = '\0';
+  return i;
+}
+
+/* copy: copy 'from' into 'to': assume 'to' is big enough */
+void copy(char to[], char from[])
+{
+  int i;
+  i = 0;
+
+  /* as long as end of file is not reached copy i'th index */
+  while((to[i] = from[i] !='\0'))
+  {
+    ++i;
+  }
+  // don't need to return to[] because arrays are pass by reference.
+}
+```
