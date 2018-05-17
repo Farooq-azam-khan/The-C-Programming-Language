@@ -1,65 +1,61 @@
-
 #include <stdio.h>
-#define MAXLINE 1000 /* maximum input line size */
-int getLine(char line[], int lim);
+#define MAX_LENGTH 1000
+
+int get_line(char line[], int lim);
 void copy(char to[], char from[]);
 
-/* print longest input line */
 int main(void)
 {
-  int len;                  /* length of current line */
-  int max;                  /* length of maximum line seen */
-  char line[MAXLINE];       /* current input line */
-  char longest[MAXLINE];    /* longest line seen so far */
+  printf("Type a series of lines and I will give you ");
+  printf("the longest one\n");
 
+  int max;                    /* length of max line */
+  int len;                    /* length of current line */
+
+  char line[MAX_LENGTH];      /* character array of current line */
+  char longest[MAX_LENGTH];   /* character array of longest line */
 
   max = 0;
-  while((len=getLine(line, MAXLINE)) > 0)
+  while((len=get_line(line, MAX_LENGTH))>0)
   {
     if (len>max)
     {
       max = len;
       copy(longest, line);
-      printf("%s", longest); 
     }
   }
-  if (max>0) /* indication of a line */
+  /* if len > 0 means that there was input 1 or greater */
+  if (max > 0)
   {
-    printf("%s", longest);
+    printf("longest line: %s\n", longest);
   }
   return 0;
 }
 
-/* getline: read a line into s, return length */
-int getLine(char s[], int lim)
+/* function that asks user for input */
+int get_line(char line[], int lim)
 {
   int c, i;
-  for (int i=0; i<lim-1 && (c=getchar()!=EOF&&c!='\n'); ++i)
+
+  for (i=0; (i<lim-1) && ((c=getchar()) !=EOF) && c!='\n'; ++i)
   {
-    // put character into array s
-    s[i] = c;
+      line[i] = c;
   }
-  // adding index for a new line becuase we want to return 0 when it is EOF
-  if (c == '\n')
+  if (c=='\n')
   {
-    s[i] = c;
+    line[i] = c;
     ++i;
   }
-  // this is end of string
-  s[i] = '\0';
+  line[i] = '\0';
   return i;
 }
 
-/* copy: copy 'from' into 'to': assume 'to' is big enough */
+/* copy the value from one array to another: */
 void copy(char to[], char from[])
 {
-  int i;
-  i = 0;
-
-  /* as long as end of file is not reached copy i'th index */
-  while((to[i] = from[i] !='\0'))
+  int i=0;
+  while((to[i] = from[i]) != '\0')
   {
-    ++i;
+    i++;
   }
-  // don't need to return to[] because arrays are pass by reference.
 }

@@ -232,38 +232,27 @@ int power(int base, int n)
 - pass by value gets a copy of the arguments when the function is called rather than the value that is store in memory.
 - this is an _asset not a liability. It leads to more compact programs with fewer extraneous variables, i.e. you don't have to make temp vars of your parameters whenever you want to alter them._
 - simpler implementation of power function, count down the variable n:
-``` C
-int power(int base, int n)
-{
-  int p;
-  for (p = 1; n> 0; --n)
-    p = P*base;
-  return p;
-}
-```
-- When necessary, it is possible to arrange for function to modify variable if the caller provides the _address_ of the variable to be set (i.e. a __pointer__) and the called function must declare the parameter to be a pointer and access the variable indirectly through it.
-- For arrays the name of an array is use as a parameter, an address to the first element in the array, thus, the function can alter values in array.
 
-1.9 Character Arrays
-- `getline()` function will get the line of an input. This fuction will return lenght of line, if zero is return then it is end of file.
-- 'copy()' function will currently longest line to new place in memory.
 ``` C
 #include <stdio.h>
-#define MAXLINE 1000 /* maximum input line size */
-int getline(char line[], int maxline);
+#define MAX_LENGTH 1000
+
+int get_line(char line[], int lim);
 void copy(char to[], char from[]);
 
-/* print longest input line */
-main()
+int main(void)
 {
-  int len;                  /* length of current line */
-  int max;                  /* length of maximum line seen */
-  char line[MAXLINE];       /* current input line */
-  char longest[MAXLINE];    /* longest line seen so far */
+  printf("Type a series of lines and I will give you ");
+  printf("the longest one\n");
 
+  int max;                    /* length of max line */
+  int len;                    /* length of current line */
+
+  char line[MAX_LENGTH];      /* character array of current line */
+  char longest[MAX_LENGTH];   /* character array of longest line */
 
   max = 0;
-  while((len=get(line, MAXLINE)) > 0)
+  while((len=get_line(line, MAX_LENGTH))>0)
   {
     if (len>max)
     {
@@ -271,44 +260,120 @@ main()
       copy(longest, line);
     }
   }
-  if (max>0) /* indication of a line */
+  /* if len > 0 means that there was input 1 or greater */
+  if (max > 0)
   {
-    printf("%s", longest);
+    printf("longest line: %s\n", longest);
   }
   return 0;
 }
 
-/* getline: read a line into s, return length */
-int getline(char s[], int lim)
+/* function that asks user for input */
+int get_line(char line[], int lim)
 {
   int c, i;
-  for (int i=0; i<lim-1 && (c=getchar()!=EOF&&c!='\n'); ++i)
+
+  for (i=0; (i<lim-1) && ((c=getchar()) !=EOF) && c!='\n'; ++i)
   {
-    // put character into array s
-    s[i] = c;
+      line[i] = c;
   }
-  // adding index for a new line becuase we want to return 0 when it is EOF
-  if (c == '\n')
+  if (c=='\n')
   {
-    s[i] = c;
+    line[i] = c;
     ++i;
   }
-  // this is end of string
-  s[i] = '\0';
+  line[i] = '\0';
   return i;
 }
 
-/* copy: copy 'from' into 'to': assume 'to' is big enough */
+/* copy the value from one array to another: */
 void copy(char to[], char from[])
 {
-  int i;
-  i = 0;
+  int i=0;
+  while((to[i] = from[i]) != '\0')
+  {
+    i++;
+  }
+}
+```
+- reason `get_line()` has the arguments `MAX_LENGTH` even though it is a constant is because if we want to put it in a different file for broader use then we can.
+- way in which arrays are pass as parameters are as following: `copy(int arr[])` -> note arrays are not pass by value. You do not need to return them if you want the contents they are modified when you use the function.
+- `\0` is the _null character_ whose value is zero. It is added to the end of the character array to indicate the end of the array.
 
-  /* as long as end of file is not reached copy i'th index */
-  while((to[i] = from[i] !='\0'))
+## 1.10 External Variable and Scope
+- variables in a functions are local so no other function can have access to them. known as __automatic__ variables.
+- there are also __external__ variables i.e. they can be accessed by any function. They must be declared in the outer most block. __External variables__ exist permanently even after the function that has declared has returned. These must be defined only once outside of any function, and must be declared (w/ `extern` command) in any function that wants to use it.
+
+```C
+#include <stdio.h>
+#define MAXLINE 1000
+
+/** this file demostrant the external vars and the extern cmd */
+// external variables
+int max;
+char line[MAXLINE];
+char longest[MAXLINE];
+
+// fuction decleration
+int get_line(void);
+void copy(void);
+
+int main(void)
+{
+  int len;
+  // declare external vars
+  extern int max;
+  extern char longest[];
+
+  max = 0;
+  while((len=get_line())>0)
+  {
+    if(len > max)
+    {
+      max = len;
+      copy();
+    }
+  }
+  if(max>0)
+  {
+    printf("(max) %s", longest);
+  }
+  return 0;
+}
+
+int get_line(void)
+{
+  int c, i;
+  extern char line[];
+
+  for(i=0; (i<MAXLINE-1)&& (c=getchar())!=EOF
+            &&c!='\n'; ++i)
+  { line[i]=c; }
+
+  if (c=='\n') { line[i++] = c; }
+  line[i] = '\0';
+  return i;
+
+}
+
+void copy(void)
+{
+  int i;
+  extern char line[], longest[];
+  i=0;
+  while((longest[i]=line[i])!='\0')
   {
     ++i;
   }
-  // don't need to return to[] because arrays are pass by reference.
 }
 ```
+
+- the `extern` declaration can be omitted if the definitio of an
+external variable occurs in the source file before its use in a particular function
+  - the `extern` declarations in `main`, `getline`, `copy` are redundant
+  - if for example there were three files, and `file1` had a variable that was needed in `file2` and `file3`, the `extern` declaration would be needed in `file2` and `file3` to connect the occurrences of the variables.
+  - usual practice is to collect `extern` declarations of variables and functions in a separate file, __header__, it is included by `#include` and the file extension `.h` is also conventional.
+
+- __Define__ and __declaration__ have different meanings in this context.
+  - _definition_: refers to place where variable is created or assigned storage
+  - _declaration_: refers to places where the nature of the variable is state but no storage is allocated.
