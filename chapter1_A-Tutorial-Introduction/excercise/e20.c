@@ -26,9 +26,7 @@ int main(void)
   printf("Write your input:\n");
   getLine();
   print_inpt();
-  detab(); 
-
-
+  detab();
 }
 
 void detab()
@@ -66,6 +64,7 @@ void getLine()
       break;
     }
   }
+  inpt[++i]='\0'; 
   // printf("%s", inpt);
 }
 
