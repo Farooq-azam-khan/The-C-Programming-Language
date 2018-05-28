@@ -37,4 +37,4 @@ int main(void)
 
   //TODO: for double from standard library and calculation
   return 0;
-}
+} 

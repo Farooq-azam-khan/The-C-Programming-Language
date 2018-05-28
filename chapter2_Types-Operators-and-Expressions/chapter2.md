@@ -98,4 +98,69 @@ else
 ```
 - relational operators: `>, >=, <, <=`, all have same precedence. Below them in precedence are `==, !=`.
 Relation operators have lower precedence than arithmetic operators. Eg `i<lim-1` is same as `i<(lim-1)`.
-- logical operators `&&` and `||` are evaluated left to right. `&&` is higher in precedence thank `||` and both are lower than relational and equalility operators
+- logical operators `&&` and `||` are evaluated left to right. `&&` is higher in precedence thank `||` and both are lower than relational and equality operators
+
+## Type Conversion
+
+- `atoi()` converts string of integers to digits.
+``` C
+/* atoi: convert s to integer */
+int atio(char s[])
+{
+  int i, n;
+  n = 0;
+  // iterate if char is a digit
+  for (i=0; s[i]>='0' && s[i]<='9'; ++i)
+  {
+    n = 10 * n + (s[i] - '0');
+  }
+  return n;
+}
+```
+- `lower()` converts uppercase letter to lowercase
+```C
+/* lower: convert c to lower case; ASCII only */
+int lower(int c)
+{
+  if (c>='A'&& c<='Z')
+  {
+    return c+ 'a'-'A';
+  }
+  else
+  {
+    return c;
+  }
+}
+```
+- standard library `<ctype.h>` is used for these sort of operations.
+- implicit arithmetic conversions work by promoting the "lower" type to a "higher" type before the operation proceeds.
+- for unsigned operands:
+  - if either operand is `long double`, convert other to it
+  - else if either operand is `double` convert other to it
+  - else if operand is `float` convert other to it
+  - else convert `char` and `short` to `int`
+  - then, if either operand is `long` convert other to `long`
+- comparison between signed and unsigned values are machine-dependent, because they depend on size of integer types. Lets say `int` is 16 bit and `long` 32 bit
+  - `-1L<1U`: because `1U` which is an `int` is promoted to a signed long
+  - `-1L>1UL`: because `-1L` is promoted to `unsigned long` and thus appears to be a larger positive number.
+  - conversion from higher order to lower order (`double` to `float` or `int` to `char`) looses information by truncating the most significant bits.
+  - type conversion takes place when arguments are passed to functions as well. This is why, even if functions types are `char` and `float` they are declared as `int` and `double` respectively.
+  - explicit type conversions can be forced ("coerced") in any expression via a unary operator called a `cast`: `(type-name) expression`
+    - eg: `sqrt()` expects `double` thus if we pass `int` we have to cast it as `sqrt((double) n);`
+    - this is not needed per-say because `C` is smarter and automatically will cast the argument/s.
+
+```C
+/* pseudo-random number generator */
+unsigned long int next = 1;
+/* rand: return rand int */
+int rand(void)
+{
+  next = next * 1103515245 + 12345;
+  return (unsigned int)(next/65536)%32768;
+}
+/*srand: set seet for rand() */
+void srand(unsigned int seed)
+{
+  next = seed;
+}
+```
