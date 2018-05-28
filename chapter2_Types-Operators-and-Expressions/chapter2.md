@@ -164,3 +164,36 @@ void srand(unsigned int seed)
   next = seed;
 }
 ```
+## 8 Increment and Decrement Operators
+- `++` and `--`, there is also post and pre increment/decrement.
+- can only be applied to variable so `(i+j)++` is illegal.
+```C
+/*squeeze: delete all c form s*/
+void squeeze(char s[], int c)
+{
+  int i, j;
+  for (i=j=0; s[i]!='\0';i++)
+  {
+    if(s[i]!=c)
+    {
+      s[j++]=s[i];
+    }
+  }
+  s[j] = '\0';
+}
+```
+```C
+/* concatenate two strings: s must be big enough */
+void strcat(char s[], char t[])
+{
+  // i== index for s, and j== index for t
+  int i, j;
+  i=j=0;
+  // find end of string
+  while(s[i]!='\0'){i++;}
+  
+  // i== len(s)-1, j==0;
+  // copy t to s
+  while((s[i++]=t[j++])!='\0'){;}
+}
+```
