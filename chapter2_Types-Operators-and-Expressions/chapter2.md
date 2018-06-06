@@ -191,9 +191,76 @@ void strcat(char s[], char t[])
   i=j=0;
   // find end of string
   while(s[i]!='\0'){i++;}
-  
+
   // i== len(s)-1, j==0;
   // copy t to s
   while((s[i++]=t[j++])!='\0'){;}
 }
 ```
+## 9 Bitwise Operators
+- C provides 6 bit manipulation operators:
+  - `&` bitwise AND
+  - `|` bitwise inclusive OR
+  - `^` bitwise exclusive OR
+  - `<<` left shift
+  - `>>` right shift
+  - `~` one's complement (unary)
+- bitwise AND is often used to mask off some set of bits:
+  - `n = n & 0177;` sets to zero all but the low-order 7 bits of n.
+- bitwise OR is use to turn bits on
+  - `x = x|SET_ON;` sets to one in `x` the bits that are set to one in `SET_ON`.
+- bitwise exclusive OR sets to one where each bit position is different and zero otherwise.
+- `&&` and `&` are different, same goes for `|` and `||`.
+- `>>` and `<<` shift numbers: `x<<2` shifts value of `x` left by 2 positions. Same as multiplyin by `4`
+
+- `~` will shift a `1` to `0` and a `0` to `1`
+``` C
+/* getbits: et n bits from position p */
+unsigned getbits(unsigned x, int p, int n)
+{
+  return (x >> (p+1-n)) & ~(~0 << n);
+}
+```
+- the expression `x>>(p+1-n)` moves the desired field to the right end of the word. `~0` is all 1-bits, `~0<<n` places zeros in the rightmost n bits; complementing that again masks it with ones.
+- TODO: come back to exercise: 2-6, 2-7, 2-8.
+
+## 10 Assignment Operators and Expressions
+- `i = i+1` is same as `i++` or `i+=1`
+- `+=` is refereed to as an __assignment operator__
+- format: `op=` where op = `+ - * / % << >> & ^ |`
+- writing expression format: `expr_1 = expr_1 op expr_2` is same as `expr_1 op= expr_2`
+``` C
+/* bitcount: coutn 1 bits in x */
+int bitcount(unsigned x)
+{
+  int b;
+  for (b=0; x!=0; x>>=1)
+  {
+    if (x&01)
+    {
+      b++;
+    }
+  }
+  return b;
+}
+```
+
+## 11 Conditional Expressions
+- following statement gets biggest number
+``` C
+if (a>b)
+{
+  z=a;
+} else { z=b;}
+```
+- __conditional expression__ is written with `?:` and is an alternative way of writing conditional expressions: `expr_1 ? expr_2 : expr_3`.
+  - `expr_1` is evaluated first. If it is true, then the expr_2 is evaluated afterwards. Only one of expr_2 or expr_3 can be evaluated.
+`z = (a>b)? a : b /* z = max(a,b)*/`
+- this is used for succinct code:
+``` C
+for (int i=0;i<n;i++)
+     printf("%6d%c",a[i],(i%10==9||i==n-1)?'\n':' ');
+```
+
+# 12 Precedence and order of Evaluation
+- yum.
